@@ -1,4 +1,4 @@
-# show git branch
+# display directory & git branch
 
 parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
@@ -33,10 +33,5 @@ alias coding="cd ~/Documents/Coding"
     # setup eslint/airbnb for create-react-app along with SCSS and tests
 
     alias mk-airbnb="cp ~/templates/airbnb/.eslintrc . && cp ~/templates/airbnb/.gitignore . && cp ~/templates/airbnb/package.json . && mk-dir"
-
-# Setting PATH for Python 3.6
-# The original version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
-export PATH
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
