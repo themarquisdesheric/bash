@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source ~/bash/home/bash-scripts.sh
 source ~/bash/git-completion.bash;
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function cra() {
   if [ -z $1 ]; then
     echo -e "\n Usage: cra \033[36m<project-name> \033[00m \n"
