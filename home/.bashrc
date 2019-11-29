@@ -17,16 +17,10 @@ alias 401="cd ~/Documents/Coding/code_fellows/401"
 alias lynda="cd ~/Documents/Coding/Lynda"
 alias coding="cd ~/Documents/Coding"
 alias rm_screenshots="rm ~/Desktop/Screen*.png"
-
-# setup project
-
-alias mk-config="cp ~/templates/node/.eslintrc . && cp ~/templates/node/.gitignore . && npm init -y"
-alias mk-dir="mkdir -p test/unit"
-alias mk-project="mk-dir && mk-config"
-
-# setup eslint/airbnb for create-react-app along with SCSS and tests
-
-alias mk-airbnb="cp ~/templates/airbnb/.eslintrc . && cp ~/templates/airbnb/.gitignore . && cp ~/templates/airbnb/package.json . && mk-dir"
+alias amber-health="cd ~/projects/amber-health"
+# The Good 
+alias theGood="cd ~/Documents/GitHub/ABTestBase"
+alias parcelBuild="parcel build $@ -d build --experimental-scope-hoisting"
 
 export PS1="\h \[\033[35m\]\w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "
 export PATH=$PATH:~/mongodb/bin
@@ -36,3 +30,24 @@ export PATH=~/bin:$PATH
 
 export CLICOLOR=1
 export LSCOLORS=gxFxCxDxBxegedabagaced
+
+# Run 'nvm use' automatically every time there's 
+# a .nvmrc file in the directory. Also, revert to default 
+# version when entering a directory without .nvmrc
+
+enter_directory() {
+if [[ $PWD == $PREV_PWD ]]; then
+    return
+fi
+
+PREV_PWD=$PWD
+if [[ -f ".nvmrc" ]]; then
+    nvm use
+    NVM_DIRTY=true
+elif [[ $NVM_DIRTY = true ]]; then
+    nvm use default
+    NVM_DIRTY=false
+fi
+}
+
+export PROMPT_COMMAND=enter_directory

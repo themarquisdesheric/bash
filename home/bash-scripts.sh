@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# create a new Create React App project using a given name
+# cleans up some of the defaults
 function cra() {
   if [ -z $1 ]; then
     echo -e "\n Usage: cra \033[36m<project-name> \033[00m \n"
@@ -26,4 +28,28 @@ function cra() {
   git commit -m "initial cleanup of create-react-app"
 
   yarn start
+}
+
+function greet() {
+  LOOPING=true
+
+  while $LOOPING; do
+    echo "What is your name?"
+    read NAME
+    NO_RESPONSE_COUNT=0
+
+    if [[ -z $NAME ]]; then
+      echo "ALL YOU HAD TO DO WAS GIVE ME YOUR NAME :("
+      echo "Let's try this again..."
+
+      
+    elif [[ -n $NAME ]]; then
+      if [[ NO_RESPONSE_COUNT -eq 0 ]]; then
+        echo "OH HELLO THERE, $NAME"
+        echo "That only took $NO_RESPONSE_COUNT tries..."
+      fi
+
+      LOOPING=false
+    fi
+  done
 }
