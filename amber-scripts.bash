@@ -1,34 +1,35 @@
 #!/bin/bash
 
-# don't forget to change the path and make it generate the date as filename/date field
+# templates a new markdown article for The Chronic site
 
-# generate a new article for The Chronic
 function createArticle() {
-  # variable for filepath 
-
-  echo -e "--- \ntemplateKey: article" > ~/Desktop/Code/amber-health/article.md
-  echo -e "\nPlease enter a title for your article:\n"
-  # make intro
-  read TITLE
-  echo "title: $TITLE" >> ~/Desktop/Code/amber-health/article.md
-
   CURRENT_DATE=`date +%Y-%m-%d`
 
-  echo "date: $CURRENT_DATE" >> ~/Desktop/Code/amber-health/article.md
+  echo -e "\nPlease enter a title for your article:\n"
+  read TITLE
+
+  KEBAB_CASE_TITLE=${TITLE// /-}
+  LOWER_KEBAB_CASE=$(echo $KEBAB_CASE_TITLE | tr '[:upper:]' '[:lower:]')
+  FILE_PATH="$HOME/Desktop/Code/amber-health/$CURRENT_DATE-$LOWER_KEBAB_CASE.md"
+
+  echo -e "--- \ntemplateKey: article" > $FILE_PATH
+  echo "title: $TITLE" >> $FILE_PATH
+
+
+  echo "date: $CURRENT_DATE" >> $FILE_PATH
 
   echo -e "\nPlease enter a description:\n"
   read DESCRIPTION
-  echo "description: $DESCRIPTION" >> ~/Desktop/Code/amber-health/article.md
+  echo "description: $DESCRIPTION" >> $FILE_PATH
 
   echo -e "\nPlease enter the image name (with extension):\n\nExample: pom-2.jpg\n"
   read FEATURED_IMAGE
 
-  # open images directory here 
-  # check if image exists 
+  # check if image exists. If not, open images directory
 
-  echo "featuredimage: /img/$FEATURED_IMAGE" >> ~/Desktop/Code/amber-health/article.md
+  echo "featuredimage: /img/$FEATURED_IMAGE" >> $FILE_PATH
 
-  # tags
+  # make tags
 
-  echo -e "--- \n" >> ~/Desktop/Code/amber-health/article.md
+  echo -e "--- \n" >> $FILE_PATH
 }
