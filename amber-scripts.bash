@@ -5,7 +5,7 @@
 function createArticle() {
   CURRENT_DATE=`date +%Y-%m-%d`
 
-  echo -e "\nPlease enter a title for your article:\n"
+  echo -e "\n\033[36m Please enter a title for your article: \033[00m\n"
   read TITLE
 
   KEBAB_CASE_TITLE=${TITLE// /-}
@@ -17,11 +17,11 @@ function createArticle() {
 
   echo "date: $CURRENT_DATE" >> $FILE_PATH
 
-  echo -e "\nPlease enter a description:\n"
+  echo -e "\n\033[36m Please enter a description: \033[00m\n"
   read DESCRIPTION
   echo "description: $DESCRIPTION" >> $FILE_PATH
 
-  echo -e "\nPlease enter the image name (with extension):\n\nExample: pom-2.jpg\n"
+  echo -e "\n\033[36m Please enter the image name (with extension):\n\n\033[32m Example: pom-2.jpg \033[00m\n"
   read FEATURED_IMAGE
 
   # check if image exists. If not, open images directory
@@ -29,18 +29,9 @@ function createArticle() {
   IMAGE_DIRECTORY="$HOME/Desktop/Code/amber-health/public/img"
 
   if [ ! -e $IMAGE_DIRECTORY/$FEATURED_IMAGE ]; then
-    echo -e "\nimage \"$FEATURED_IMAGE\" not found. Opening images folder so you can add it now. Please make sure to give it the same name.\n"
+    echo -e "\n\033[31m image \"$FEATURED_IMAGE\" not found. Opening images folder so you can add it now. Please make sure to give it the same name. \033[00m\n"
     
     open $IMAGE_DIRECTORY
-  
-    echo -e "Waiting for you to add $FEATURED_IMAGE. Once you have added it, type \"proceed\" to continue.\n"
-
-    read RESPONSE
-
-    if [[ $RESPONSE != "proceed" ]]; then
-      echo -e "\nYou'll need to add your image to the markdown in the editor\n"
-      echo "featuredimage: /img/ADD IMAGE NAME AND EXTENSION HERE" >> $FILE_PATH
-    fi
   fi
 
   echo -e "featuredimage: /img/$FEATURED_IMAGE\ntags:\n  - MAKE\n  - THESE\n  - TAGS\n--- \n" >> $FILE_PATH
