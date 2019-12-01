@@ -1,7 +1,13 @@
 #!/bin/bash
 
-IMAGE_DIRECTORY="$HOME/Desktop/Code/amber-health/public/img"
-ARTICLE_DIRECTORY="$HOME/Desktop/Code/amber-health/src/pages/articles"
+REPO_DIRECTORY="$HOME/Desktop/Code/amber-health"
+IMAGE_DIRECTORY="$REPO_DIRECTORY/public/img"
+ARTICLE_DIRECTORY="$REPO_DIRECTORY/src/pages/articles"
+
+GREEN_COLOR="\n\033[32m"
+RED_COLOR="\n\033[31m"
+BLUE_COLOR="\n\033[36m"
+WHITE_COLOR="\n\033[00m"
 
 # aliases
 
@@ -10,58 +16,70 @@ alias articles="code $ARTICLE_DIRECTORY"
 alias preview="npm i && npm run develop"
 alias update="git pull && npm i"
 
-#functions
+# functions
 
 # commits, pulls, and pushes to GitHub
-
 function publish() {
-  echo -e "Please provide a short commit message explaining your changes (not more than 50 characters: you can test this in VScode's Source Control tab)\n"
+  git add $REPO_DIRECTORY
+  
+  echo -e "$BLUE_COLOR Please provide a short commit message explaining your changes \n (not more than 50 characters: you can test this in VScode's Source Control tab) $WHITE_COLOR"
 
   read COMMIT_MSG
 
   if [[ ${#COMMIT_MSG} -gt 50 ]]; then
     TRUNCATED_COMMIT_MSG=${COMMIT_MSG:0:50}
 
-    echo -e "\n Message over 50 characters, truncated to:\n $TRUNCATED_COMMIT_MSG \n"
+    echo -e "$GREEN_COLOR Message over 50 characters, truncated to:$WHITE_COLOR $TRUNCATED_COMMIT_MSG $WHITE_COLOR"
 
     git commit -m "$TRUNCATED_COMMIT_MSG"
   else
     git commit -m "$COMMIT_MSG"
   fi
 
-  git pull && git push
+  git pull && git push && echo -e "$GREEN_COLOR SUCCESS! Your changes will be published soon. $WHITE_COLOR" || echo -e "$RED_COLOR Oh shit... something went wrong $WHITE_COLOR"
 }
 
 # templates a new markdown article for The Chronic site
-
 function createArticle() {
   CURRENT_DATE=`date +%Y-%m-%d`
 
-  echo -e "\n\033[36m Please enter a title for your article: \033[00m\n"
+  echo -e "$BLUE_COLOR Please enter a title for your article: $WHITE_COLOR"
   read RAW_TITLE
+
+  # scrub special characters ' " . , ! ? # % ()
+  RAW_TITLE=${RAW_TITLE//./}
+  RAW_TITLE=${RAW_TITLE//,/}
+  RAW_TITLE=${RAW_TITLE//\'/}
+  RAW_TITLE=${RAW_TITLE//\"/}
+  RAW_TITLE=${RAW_TITLE//\!/}
+  RAW_TITLE=${RAW_TITLE//\?/}
+  RAW_TITLE=${RAW_TITLE//#/}
+  RAW_TITLE=${RAW_TITLE//%/}
+  RAW_TITLE=${RAW_TITLE//$/}
+  RAW_TITLE=${RAW_TITLE//(/}
+  RAW_TITLE=${RAW_TITLE//)/}
 
   KEBAB_CASE_TITLE=${RAW_TITLE// /-}
   TITLE=$(echo $KEBAB_CASE_TITLE | tr '[:upper:]' '[:lower:]')
   FILE_PATH="$ARTICLE_DIRECTORY/$CURRENT_DATE-$TITLE.md"
 
   echo -e "--- \ntemplateKey: article" > $FILE_PATH
-  echo "title: $TITLE" >> $FILE_PATH
+  echo "title: $RAW_TITLE" >> $FILE_PATH
 
   echo "date: $CURRENT_DATE" >> $FILE_PATH
 
-  echo -e "\n\033[36m Please enter a description: \033[00m\n"
+  echo -e "$BLUE_COLOR Please enter a description: $WHITE_COLOR"
   read DESCRIPTION
   echo "description: $DESCRIPTION" >> $FILE_PATH
 
-  echo -e "\n\033[36m Please enter the image name (with extension):\n\n\033[32m Example: pom-2.jpg \033[00m\n"
+  echo -e "$BLUE_COLOR Please enter the image name (with extension):$GREEN_COLOR \n Example: pom-2.jpg $WHITE_COLOR"
   read FEATURED_IMAGE
 
-  IMAGE_DIRECTORY="$HOME/Desktop/Code/amber-health/public/img"
-
   if [ ! -e $IMAGE_DIRECTORY/$FEATURED_IMAGE ]; then
-    echo -e "\n\033[31m image \"$FEATURED_IMAGE\" not found. Opening images folder so you can add it now. Please make sure to give it the same name. \033[00m\n"
+    echo -e "$RED_COLOR Image \"$FEATURED_IMAGE\" not found. Opening images folder so you can add it now. \n $WHITE_COLOR Please make sure to give it the same name."
     
-    images # open image directory
+    # open image directory
+    images
   fi
 
   echo -e "featuredimage: /img/$FEATURED_IMAGE\ntags:\n  - MAKE\n  - THESE\n  - TAGS\n--- \n" >> $FILE_PATH
